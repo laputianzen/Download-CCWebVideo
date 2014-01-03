@@ -11,8 +11,20 @@ for i=1:length(VideoID)
     if (~exist([storagePath KID],'dir'))
         mkdir([storagePath KID]);
     end
-
-    urlwrite([server_videoPath KID '/' KeyframeName{i}],[storagePath KID '/' KeyframeName{i},'.jpg']);
+    % error handling when url doesn't exist
+    
+    try
+        urlwrite([server_videoPath KID '/' KeyframeName{i}],[storagePath KID '/' KeyframeName{i},'.jpg']);
+    catch
+        %display i and KeyframeName of the file fail to download
+        i
+        KeyframeName{i}
+        f=fopen([storagePath 'missing_file.txt'],'at+');
+        fprintf(f,'%s is missing!\r\n',[KeyframeName{i},'.jpg']);
+        fclose(f);
+        continue
+    end
+    
 end
 
 end
